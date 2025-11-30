@@ -138,6 +138,20 @@ jobs:
           ssh-key: ${{ secrets.PRIVATE_REPO_DEPLOY_KEY }}
           ref: main
 
+      - name: Free Disk Space and Add Swap
+        run: |
+          # Free up disk space
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          # Add 8GB swap to prevent OOM during native compilation
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          echo "Swap enabled:"
+          free -h
+
       - name: Setup node
         uses: actions/setup-node@v4
         with:
