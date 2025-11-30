@@ -140,10 +140,22 @@ jobs:
 
       - name: Free Disk Space and Add Swap
         run: |
-          # Free up disk space
+          echo "=== Before cleanup ==="
+          df -h
+          # Aggressively free up disk space (can free 30-40GB)
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /usr/local/lib/android/sdk/ndk/25.*
+          sudo rm -rf /usr/local/lib/android/sdk/ndk/26.*
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/local/graalvm
+          sudo rm -rf /usr/local/.ghcup
+          sudo apt-get clean
+          docker system prune -af || true
+          echo "=== After cleanup ==="
+          df -h
           # Add 8GB swap to prevent OOM during native compilation
           sudo fallocate -l 8G /swapfile
           sudo chmod 600 /swapfile
